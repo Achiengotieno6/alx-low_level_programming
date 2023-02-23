@@ -28,6 +28,6 @@ void print_triangle(int size)
 		_putchar('\n');
 		a++;
 	}
-	if (a == 0)
+	if (a == 1)
 		_putchar('\n');
 }
