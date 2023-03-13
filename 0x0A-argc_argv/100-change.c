@@ -10,8 +10,7 @@
 
 int main(int argc, char **argv)
 {
-	int cents = 0;
-	int coins = 0;
+	int cents, int coins = 0;
 
 	if (argc != 2)
 	{
@@ -48,7 +47,7 @@ int main(int argc, char **argv)
 	while (cents >= 1)
 	{
 		coins++;
-		cents -=1;
+		cents -= 1;
 	}
 	printf("%d\n", coins);
 	return (0);
