@@ -7,21 +7,16 @@
 unsigned int binary_to_uint(const char *b)
 {
 	unsigned int decimal = 0;
-	unsigned int base = 1;
-	unsigned int i;
 
 	if (b == NULL)
 		return (0);
 
-	for (i = 0; b[i] != '\0'; i++)
+	while (*b != '\0')
 	{
-		if (b[i] == '1')
-		{
-			decimal = decimal + base;
-		}
-		else if (b[i] != '0' && b[i] != '1')
+		if (*b != '1' && *b != '0')
+
 			return (0);
-		base = base * 2;
+		decimal = (decimal << 1) + (*b++ - '0');
 	}
 	return (decimal);
-}	
+}
