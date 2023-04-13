@@ -3,7 +3,7 @@
  * read_textfile - reads and prints files in the POSIX stdout
  * @filename: name of the  file to be read
  * @letters: number of letters to be printed
- * Return: number of letters read
+ * Return: actual number of bytes read
  */
 ssize_t read_textfile(const char *filename, size_t letters)
 {
