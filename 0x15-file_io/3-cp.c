@@ -1,7 +1,33 @@
 #include "main.h"
 #include <errno.h>
-#define BUFFER_SIZE 1024
-#define SE STDERR_FILENO
+/**
+ * __exit - prints error messages and exits
+ * @error: num is either exit value or file descriptor
+ * @s: name of the file
+ * @fd: file descriptor
+ * Return: 0 on success
+ */
+int __exit(int error, char *s, int fd)
+{
+	switch (error)
+	{
+	case 97:
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(error);
+	case 98:
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", s);
+		exit(error);
+	case 99:
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", s);
+		exit(error);
+	case 100:
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(error);
+	default:
+		return (0);
+	}
+}
+
 /**
  * main - program copies content of one file to another
  * @argc: counts number of arguments
@@ -10,31 +36,26 @@
  */
 int main(int argc, char *argv[])
 {
-	int fp1, fp2;
-	int input, output;
-	char buf[BUFFER_SIZE];
+	int fp1, fp2, input, output;
+	char *buffer[1024];
 
 	if (argc != 3)
-		dprintf(SE, "Usage: cp file_from file_to\n"), exit(97);
+		__exit(97, NULL, 0);
 	fp1 = open(argv[1], O_RDONLY);
 	if (fp1 == -1)
-		dprintf(SE, "Error: Cant read from file %s\n", argv[1]), exit(98);
-	fp2 = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC | 0644);
+		__exit(98, argv[1], 0);
+	fp2 = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
 	if (fp2 == -1)
-		dprintf(SE, "Error: Can't write to %s\n", argv[2]), exit(99);
-	/* copying of contents input file to output file */
-	input = read(fp1, buf, BUFFER_SIZE);
-	output = write(fp2, buf, input);
-	while (input > 0)
+		__exit(99, argv[2], 0);
+	while ((input = read(fp1, buffer, 1024)) != 0)
 	{
-		if (output != input)
-			dprintf(SE, "Error: Can't write to %s\n", argv[2]), exit(99);
+		if (output == -1)
+			__exit(98, argv[1], 0);
+		output = write(fp2, buffer, input);
+		if (output == -1)
+			__exit(99, argv[2], 0);
 	}
-	if (input == -1)
-		dprintf(SE, "Error: Can't read from file %s\n", argv[1]), exit(98);
-	if (close(input) == -1)
-		dprintf(SE, "Error: Can't close fd %d\n", fp1), exit(100);
-	if (close(output) == -1)
-		dprintf(SE, "Error: Can't close fd %d\n", fp2), exit(100);
+	close(fp2) == -1 ? (__exit(100, NULL, fp2)) : close(fp2);
+	close(fp1) == -1 ? (__exit(100, NULL, fp1)) : close(fp1);
 	return (0);
 }
